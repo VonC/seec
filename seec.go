@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/atotto/clipboard"
 	"github.com/google/go-github/github"
 )
 
@@ -31,12 +32,15 @@ func main() {
 	}
 	plogin := login(*pcommit.Author.Email, client)
 
-	fmt.Printf("See [commit %s](https://github.com/git/git/commit/%s) by [%s](https://github.com/%s (`%s`)), %s.  \n",
+	res := fmt.Sprintf("See [commit %s](https://github.com/git/git/commit/%s) by [%s](https://github.com/%s (`%s`)), %s.  \n",
 		(*pcommit.SHA)[:7], *pcommit.SHA,
 		*pcommit.Author.Name, plogin, plogin, pcommit.Author.Date.Format("02 Jan 2006"))
-	fmt.Printf("<sup>(Merged by [%s](https://github.com/%s -- `%s` --) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>",
+	res = res + fmt.Sprintf("<sup>(Merged by [%s](https://github.com/%s -- `%s` --) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>",
 		*commit.Author.Name, clogin, clogin,
 		sha1[:7], sha1, commit.Committer.Date.Format("02 Jan 2006"))
+	fmt.Println(res)
+	clipboard.WriteAll(res)
+	fmt.Println("(Copied to the cipboard)")
 }
 
 func login(email string, client *github.Client) string {
