@@ -1,0 +1,3 @@
+[submodule "deps/go-github"]
+	path = deps/go-github
+	url = https://github.com/google/go-github
