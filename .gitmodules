@@ -1,3 +1,6 @@
 [submodule "deps/src/github.com/google/go-github"]
 	path = deps/src/github.com/google/go-github
 	url = https://github.com/google/go-github
+[submodule "deps/src/github.com/google/go-querystring"]
+	path = deps/src/github.com/google/go-querystring
+	url = https://github.com/google/go-querystring
