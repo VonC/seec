@@ -4,3 +4,6 @@
 [submodule "deps/src/github.com/google/go-querystring"]
 	path = deps/src/github.com/google/go-querystring
 	url = https://github.com/google/go-querystring
+[submodule "deps/src/github.com/atotto/clipboard"]
+	path = deps/src/github.com/atotto/clipboard
+	url = https://github.com/atotto/clipboard
