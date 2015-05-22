@@ -24,7 +24,6 @@ func main() {
 	}
 	clogin := login(*commit.Author.Email, client)
 	parent := commit.Parents[1]
-	fmt.Printf("%+v\n", parent)
 	pcommit, _, err := client.Git.GetCommit("git", "git", *parent.SHA)
 	if err != nil {
 		fmt.Printf("Unable to get parent commit '%s': err '%v'\n", parent.SHA, err)
