@@ -13,3 +13,4 @@ set GOBIN=%~dp0/bin
 cd %~dp0
 go install
 endlocal
+doskey seec=%~dp0\bin\seec.exe $*
