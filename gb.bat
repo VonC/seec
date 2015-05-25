@@ -10,5 +10,6 @@ if not "%GOPATH%" == "" (
 setlocal
 set GOPATH=%~dp0/deps
 set GOBIN=%~dp0/bin
+cd %~dp0
 go install
 endlocal
