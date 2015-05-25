@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/atotto/clipboard"
 	"github.com/google/go-github/github"
@@ -55,6 +56,7 @@ func login(email string, name string, client *github.Client) string {
 		}
 	}
 	if res == nil || *res.Total == 0 {
+		name = strings.Replace(name, "-", " ", -1)
 		res, _, err = client.Search.Users(name, opts)
 		if err != nil {
 			fmt.Printf("Unable to search user '%s': err '%v'", name, err)
