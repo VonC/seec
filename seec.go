@@ -61,5 +61,8 @@ func login(email string, name string, client *github.Client) string {
 			os.Exit(1)
 		}
 	}
+	if res == nil || *res.Total == 0 {
+		return ""
+	}
 	return *res.Users[0].Login
 }
