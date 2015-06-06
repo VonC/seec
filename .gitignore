@@ -1,3 +1,4 @@
 *.exe
 coverage.out
 deps/pkg/
+bin/
