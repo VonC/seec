@@ -50,7 +50,8 @@ func main() {
 	res = res + fmt.Sprintf("<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>  ",
 		*commit.Author.Name, clogin, clogin,
 		sha1[:7], sha1, commit.Committer.Date.Format("02 Jan 2006"))
-	res = collect(res, *pcommit.Message, "Helped-by:", client)
+	res = collect(res, *pcommit.Message, "Test-adapted-from", client)
+	res = collect(res, *pcommit.Message, "Helped-by", client)
 	fmt.Println(res)
 	clipboard.WriteAll(res)
 	fmt.Println("(Copied to the clipboard)")
