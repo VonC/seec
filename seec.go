@@ -26,10 +26,20 @@ func main() {
 	}
 	clogin := login(*commit.Author.Email, *commit.Author.Name, client)
 	parent := commit.Parents[1]
-	pcommit, _, err := client.Git.GetCommit("git", "git", *parent.SHA)
-	if err != nil {
-		fmt.Printf("Unable to get parent commit '%s': err '%v'\n", parent.SHA, err)
-		os.Exit(1)
+	var pcommit *github.Commit
+	for pcommit == nil {
+		pcommit, _, err := client.Git.GetCommit("git", "git", *parent.SHA)
+		if err != nil {
+			fmt.Printf("Unable to get parent commit '%s': err '%v'\n", parent.SHA, err)
+			os.Exit(1)
+		}
+		// fmt.Printf("pcommit '%+v', len %d\n", pcommit, len(pcommit.Parents))
+		if len(pcommit.Parents) == 2 {
+			parent = pcommit.Parents[1]
+			pcommit = nil
+		} else {
+			break
+		}
 	}
 	plogin := login(*pcommit.Author.Email, *pcommit.Author.Name, client)
 
