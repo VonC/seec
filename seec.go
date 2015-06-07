@@ -76,6 +76,20 @@ func login(email string, name string, client *github.Client) string {
 		}
 	}
 	if res == nil || *res.Total == 0 {
+		var resIssues *github.IssuesSearchResult
+		issueSearch := fmt.Sprintf(`"Signed-off-by: %s <%s>"`, name, email)
+		resIssues, _, err = client.Search.Issues(issueSearch, opts)
+		if err != nil {
+			fmt.Printf("Unable to search issue '%s': err '%v'", issueSearch, err)
+			os.Exit(1)
+		}
+		if resIssues == nil || *resIssues.Total == 0 {
+			return ""
+		}
+		issue := resIssues.Issues[0]
+		return *issue.User.Login
+	}
+	if res == nil || *res.Total == 0 {
 		return ""
 	}
 	return *res.Users[0].Login
