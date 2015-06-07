@@ -96,16 +96,15 @@ func login(email string, name string, client *github.Client) string {
 }
 
 func collect(res, msg, activity string, client *github.Client) string {
-	re := regexp.MustCompile(fmt.Sprintf(`%s:\s+([^<\r\n])+<([^>\r\n])+>`, activity))
-	activitymsg := activity
+	re := regexp.MustCompile(fmt.Sprintf(`%s:\s+([^<\r\n]+)\s+<([^>\r\n]+)>`, activity))
+	activitymsg := activity + ": "
 	first := true
-	fmt.Printf("re='%v'\n%s\n", re.String(), msg)
 	for _, resc := range re.FindAllStringSubmatch(msg, -1) {
-		if len(resc) != 2 {
+		if len(resc) != 3 {
 			continue
 		}
-		name := resc[0]
-		email := resc[1]
+		name := resc[1]
+		email := resc[2]
 		login := login(email, name, client)
 		if !first {
 			activitymsg = activitymsg + ", "
