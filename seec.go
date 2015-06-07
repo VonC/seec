@@ -28,7 +28,7 @@ func main() {
 	parent := commit.Parents[1]
 	var pcommit *github.Commit
 	for pcommit == nil {
-		pcommit, _, err := client.Git.GetCommit("git", "git", *parent.SHA)
+		pcommit, _, err = client.Git.GetCommit("git", "git", *parent.SHA)
 		if err != nil {
 			fmt.Printf("Unable to get parent commit '%s': err '%v'\n", parent.SHA, err)
 			os.Exit(1)
