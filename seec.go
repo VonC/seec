@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/atotto/clipboard"
@@ -46,12 +47,13 @@ func main() {
 	res := fmt.Sprintf("See [commit %s](https://github.com/git/git/commit/%s) by [%s (`%s`)](https://github.com/%s), %s.  \n",
 		(*pcommit.SHA)[:7], *pcommit.SHA,
 		*pcommit.Author.Name, plogin, plogin, pcommit.Author.Date.Format("02 Jan 2006"))
-	res = res + fmt.Sprintf("<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>",
+	res = res + fmt.Sprintf("<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>  ",
 		*commit.Author.Name, clogin, clogin,
 		sha1[:7], sha1, commit.Committer.Date.Format("02 Jan 2006"))
+	res = collect(res, *pcommit.Message, "Helped-by:", client)
 	fmt.Println(res)
 	clipboard.WriteAll(res)
-	fmt.Println("(Copied to the cipboard)")
+	fmt.Println("(Copied to the clipboard)")
 }
 
 func login(email string, name string, client *github.Client) string {
@@ -77,4 +79,33 @@ func login(email string, name string, client *github.Client) string {
 		return ""
 	}
 	return *res.Users[0].Login
+}
+
+func collect(res, msg, activity string, client *github.Client) string {
+	re := regexp.MustCompile(fmt.Sprintf(`%s:\s+([^<\r\n])+<([^>\r\n])+>`, activity))
+	activitymsg := activity
+	first := true
+	fmt.Printf("re='%v'\n%s\n", re.String(), msg)
+	for _, resc := range re.FindAllStringSubmatch(msg, -1) {
+		if len(resc) != 2 {
+			continue
+		}
+		name := resc[0]
+		email := resc[1]
+		login := login(email, name, client)
+		if !first {
+			activitymsg = activitymsg + ", "
+		}
+		if login == "" {
+			activitymsg = activitymsg + fmt.Sprintf("%s <%s>", name, email)
+			first = false
+			continue
+		}
+		activitymsg = activitymsg + fmt.Sprintf("[%s (`%s`)](https://github.com/%s)", name, login, login)
+		first = false
+	}
+	if !first {
+		res = res + "\n" + activitymsg + "  "
+	}
+	return res
 }
