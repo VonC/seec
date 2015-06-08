@@ -44,31 +44,12 @@ func main() {
 	}
 	clogin := login(*commit.Author.Email, *commit.Author.Name)
 	parent := commit.Parents[1]
-	var pcommit *github.Commit
-	for pcommit == nil {
-		pcommit, _, err = client.Git.GetCommit("git", "git", *parent.SHA)
-		if err != nil {
-			fmt.Printf("Unable to get parent commit '%s': err '%v'\n", parent.SHA, err)
-			ex.Exit(1)
-		}
-		// fmt.Printf("pcommit '%+v', len %d\n", pcommit, len(pcommit.Parents))
-		if len(pcommit.Parents) == 2 {
-			parent = pcommit.Parents[1]
-			pcommit = nil
-		} else {
-			break
-		}
-	}
-	plogin := login(*pcommit.Author.Email, *pcommit.Author.Name)
-
-	res := fmt.Sprintf("See [commit %s](https://github.com/git/git/commit/%s) by [%s (`%s`)](https://github.com/%s), %s.  \n",
-		(*pcommit.SHA)[:7], *pcommit.SHA,
-		*pcommit.Author.Name, plogin, plogin, pcommit.Author.Date.Format("02 Jan 2006"))
+	res := ""
+	res = res + seeCommit(&parent, commit)
 	res = res + fmt.Sprintf("<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>  ",
 		*commit.Author.Name, clogin, clogin,
 		sha1[:7], sha1, commit.Committer.Date.Format("02 Jan 2006"))
-	res = collect(res, *pcommit.Message, "Test-adapted-from")
-	res = collect(res, *pcommit.Message, "Helped-by")
+
 	fmt.Println(res)
 	clipboard.WriteAll(res)
 	fmt.Println("(Copied to the clipboard)")
@@ -85,6 +66,33 @@ func displayRateLimit() {
 		ts := fmt.Sprintf("%s", t.Format(layout))
 		fmt.Printf("API Rate Limit: %d/%d (reset at %s)\n\n", rate.Remaining, rate.Limit, ts)
 	}
+}
+
+func seeCommit(parent, commit *github.Commit) string {
+	var pcommit *github.Commit
+	var err error
+	for pcommit == nil {
+		pcommit, _, err = client.Git.GetCommit("git", "git", *parent.SHA)
+		if err != nil {
+			fmt.Printf("Unable to get parent commit '%s': err '%v'\n", parent.SHA, err)
+			ex.Exit(1)
+		}
+		// fmt.Printf("pcommit '%+v', len %d\n", pcommit, len(pcommit.Parents))
+		if len(pcommit.Parents) == 2 {
+			parent = &pcommit.Parents[1]
+			pcommit = nil
+		} else {
+			break
+		}
+	}
+	plogin := login(*pcommit.Author.Email, *pcommit.Author.Name)
+
+	res := fmt.Sprintf("See [commit %s](https://github.com/git/git/commit/%s) by [%s (`%s`)](https://github.com/%s), %s.  \n",
+		(*pcommit.SHA)[:7], *pcommit.SHA,
+		*pcommit.Author.Name, plogin, plogin, pcommit.Author.Date.Format("02 Jan 2006"))
+	res = collect(res, *pcommit.Message, "Test-adapted-from")
+	res = collect(res, *pcommit.Message, "Helped-by")
+	return res
 }
 
 func login(email string, name string) string {
