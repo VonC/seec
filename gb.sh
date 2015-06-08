@@ -23,6 +23,7 @@ dp0="`( cd \"${dp0}\" && pwd )`"
 if [[ ! -d "${dp0}/.git/modules" ]]; then git submodule update --init ; fi
 
 if [[ "${GOPATH}" != "" && -d "${GOPATH}" ]]; then
+	updateGlobalDep "github.com/VonC/godbg"
 	updateGlobalDep "github.com/atotto/clipboard"
 	updateGlobalDep "github.com/google/go-querystring" "query"
 	updateGlobalDep "github.com/google/go-github" "github"
