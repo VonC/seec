@@ -230,7 +230,9 @@ func collect(res, msg, activity string) string {
 	re := regexp.MustCompile(fmt.Sprintf(`%s:\s+([^<\r\n]+)\s+<([^>\r\n]+)>`, activity))
 	activitymsg := activity + ": "
 	first := true
-	for _, resc := range re.FindAllStringSubmatch(msg, -1) {
+	allresc := re.FindAllStringSubmatch(msg, -1)
+	for i, resc := range allresc {
+		dot := ""
 		if len(resc) != 3 {
 			continue
 		}
@@ -240,12 +242,18 @@ func collect(res, msg, activity string) string {
 		if !first {
 			activitymsg = activitymsg + ", "
 		}
+		if i == len(allresc)-1 {
+			dot = "."
+			if i > 0 {
+				activitymsg = activitymsg + "and "
+			}
+		}
 		if login == "" {
-			activitymsg = activitymsg + fmt.Sprintf("%s <%s>", name, email)
+			activitymsg = activitymsg + fmt.Sprintf("%s <%s>%s", name, email, dot)
 			first = false
 			continue
 		}
-		activitymsg = activitymsg + fmt.Sprintf("[%s (`%s`)](https://github.com/%s)", name, login, login)
+		activitymsg = activitymsg + fmt.Sprintf("[%s (`%s`)](https://github.com/%s)%s", name, login, login, dot)
 		first = false
 	}
 	if !first {
