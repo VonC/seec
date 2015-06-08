@@ -106,10 +106,12 @@ func seeCommit(parent, commit *github.Commit) string {
 		}
 	}
 	var commits = make(map[string]*commitsByAuthor)
+	apcommit := pcommit
 	if *pcommit.Author.Name == *commit.Author.Name {
 		pdbg.Pdbgf("Same author '%s', so call checkParentCommits\nInitial message: '%s'", *pcommit.Author.Name, *commit.Message)
-		commits = checkParentCommits(&pcommit.Parents[0], *commit.Message)
+		apcommit = &pcommit.Parents[0]
 	}
+	commits = checkParentCommits(apcommit, *commit.Message)
 	if len(commits) == 0 {
 		pauthorname := *pcommit.Author.Name
 		pcommitsByAuthor := &commitsByAuthor{pcommit.Author, []*github.Commit{pcommit}}
