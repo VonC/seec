@@ -19,6 +19,7 @@ func main() {
 	}
 	sha1 := os.Args[1]
 	client = github.NewClient(nil)
+	displayRateLimit()
 	commit, _, err := client.Git.GetCommit("git", "git", sha1)
 	if err != nil {
 		fmt.Printf("Unable to get commit '%s': err '%v'\n", sha1, err)
@@ -57,6 +58,19 @@ func main() {
 	fmt.Println(res)
 	clipboard.WriteAll(res)
 	fmt.Println("(Copied to the clipboard)")
+	displayRateLimit()
+}
+
+func displayRateLimit() {
+	rate, _, err := client.RateLimit()
+	if err != nil {
+		fmt.Printf("Error fetching rate limit: %#v\n\n", err)
+	} else {
+		const layout = "15:04pm (MST)"
+		t := rate.Reset.Time
+		ts := fmt.Sprintf("%s", t.Format(layout))
+		fmt.Printf("API Rate Limit: %d/%d (reset at %s)\n\n", rate.Remaining, rate.Limit, ts)
+	}
 }
 
 func login(email string, name string) string {
