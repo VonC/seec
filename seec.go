@@ -56,14 +56,18 @@ func main() {
 }
 
 func displayRateLimit() {
-	rate, _, err := client.RateLimit()
+	rate, _, err := client.RateLimits()
 	if err != nil {
 		fmt.Printf("Error fetching rate limit: %#v\n\n", err)
 	} else {
 		const layout = "15:04pm (MST)"
-		t := rate.Reset.Time
-		ts := fmt.Sprintf("%s", t.Format(layout))
-		fmt.Printf("\nAPI Rate Limit: %d/%d (reset at %s)\n", rate.Remaining, rate.Limit, ts)
+		tc := rate.Core.Reset.Time
+		tcs := fmt.Sprintf("%s", tc.Format(layout))
+		ts := rate.Search.Reset.Time
+		tss := fmt.Sprintf("%s", ts.Format(layout))
+		fmt.Printf("\nAPI Rate Core Limit: %d/%d (reset at %s) - Search Limit: %d/%d (reset at %s)\n",
+			rate.Core.Remaining, rate.Core.Limit, tcs,
+			rate.Search.Remaining, rate.Search.Limit, tss)
 	}
 }
 
