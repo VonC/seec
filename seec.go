@@ -10,13 +10,15 @@ import (
 	"github.com/google/go-github/github"
 )
 
+var client *github.Client
+
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Println("Usage: go run seec.go <sha1>")
 		os.Exit(0)
 	}
 	sha1 := os.Args[1]
-	client := github.NewClient(nil)
+	client = github.NewClient(nil)
 	commit, _, err := client.Git.GetCommit("git", "git", sha1)
 	if err != nil {
 		fmt.Printf("Unable to get commit '%s': err '%v'\n", sha1, err)
@@ -25,7 +27,7 @@ func main() {
 	if len(commit.Parents) != 2 {
 		fmt.Printf("Sha1 '%s' has '%d' parent(s) instead of 2\n", sha1, len(commit.Parents))
 	}
-	clogin := login(*commit.Author.Email, *commit.Author.Name, client)
+	clogin := login(*commit.Author.Email, *commit.Author.Name)
 	parent := commit.Parents[1]
 	var pcommit *github.Commit
 	for pcommit == nil {
@@ -42,7 +44,7 @@ func main() {
 			break
 		}
 	}
-	plogin := login(*pcommit.Author.Email, *pcommit.Author.Name, client)
+	plogin := login(*pcommit.Author.Email, *pcommit.Author.Name)
 
 	res := fmt.Sprintf("See [commit %s](https://github.com/git/git/commit/%s) by [%s (`%s`)](https://github.com/%s), %s.  \n",
 		(*pcommit.SHA)[:7], *pcommit.SHA,
@@ -50,14 +52,14 @@ func main() {
 	res = res + fmt.Sprintf("<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>  ",
 		*commit.Author.Name, clogin, clogin,
 		sha1[:7], sha1, commit.Committer.Date.Format("02 Jan 2006"))
-	res = collect(res, *pcommit.Message, "Test-adapted-from", client)
-	res = collect(res, *pcommit.Message, "Helped-by", client)
+	res = collect(res, *pcommit.Message, "Test-adapted-from")
+	res = collect(res, *pcommit.Message, "Helped-by")
 	fmt.Println(res)
 	clipboard.WriteAll(res)
 	fmt.Println("(Copied to the clipboard)")
 }
 
-func login(email string, name string, client *github.Client) string {
+func login(email string, name string) string {
 	opts := &github.SearchOptions{Order: "desc"}
 	var res *github.UsersSearchResult
 	var err error
@@ -96,7 +98,7 @@ func login(email string, name string, client *github.Client) string {
 	return *res.Users[0].Login
 }
 
-func collect(res, msg, activity string, client *github.Client) string {
+func collect(res, msg, activity string) string {
 	re := regexp.MustCompile(fmt.Sprintf(`%s:\s+([^<\r\n]+)\s+<([^>\r\n]+)>`, activity))
 	activitymsg := activity + ": "
 	first := true
@@ -106,7 +108,7 @@ func collect(res, msg, activity string, client *github.Client) string {
 		}
 		name := resc[1]
 		email := resc[2]
-		login := login(email, name, client)
+		login := login(email, name)
 		if !first {
 			activitymsg = activitymsg + ", "
 		}
