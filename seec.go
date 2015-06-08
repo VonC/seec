@@ -49,7 +49,6 @@ func main() {
 	res = res + fmt.Sprintf("<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>  ",
 		*commit.Author.Name, clogin, clogin,
 		sha1[:7], sha1, commit.Committer.Date.Format("02 Jan 2006"))
-
 	fmt.Println(res)
 	clipboard.WriteAll(res)
 	fmt.Println("(Copied to the clipboard)")
@@ -66,6 +65,27 @@ func displayRateLimit() {
 		ts := fmt.Sprintf("%s", t.Format(layout))
 		fmt.Printf("API Rate Limit: %d/%d (reset at %s)\n\n", rate.Remaining, rate.Limit, ts)
 	}
+}
+
+type commitsByAuthor struct {
+	author   *github.CommitAuthor
+	pcommits []*github.Commit
+}
+
+func (cba *commitsByAuthor) String() string {
+	res := ""
+	first := true
+	for i, pcommit := range cba.pcommits {
+		if !first {
+			res = res + ", "
+		}
+		first = false
+		if i == len(cba.pcommits)-1 && i > 0 {
+			res = res + "and "
+		}
+		res = res + (*pcommit.SHA)[:7]
+	}
+	return fmt.Sprintf("%s=>%s", *cba.author.Name, res)
 }
 
 func seeCommit(parent, commit *github.Commit) string {
@@ -85,13 +105,83 @@ func seeCommit(parent, commit *github.Commit) string {
 			break
 		}
 	}
-	plogin := login(*pcommit.Author.Email, *pcommit.Author.Name)
+	var commits = make(map[string]*commitsByAuthor)
+	if *pcommit.Author.Name == *commit.Author.Name {
+		pdbg.Pdbgf("Same author '%s', so call checkParentCommits\nInitial message: '%s'", *pcommit.Author.Name, *commit.Message)
+		commits = checkParentCommits(&pcommit.Parents[0], *commit.Message)
+	}
+	if len(commits) == 0 {
+		pauthorname := *pcommit.Author.Name
+		pcommitsByAuthor := &commitsByAuthor{pcommit.Author, []*github.Commit{pcommit}}
+		commits[pauthorname] = pcommitsByAuthor
+		pdbg.Pdbgf("Put single commit '%s' for author '%s'", pcommitsByAuthor, pauthorname)
+	}
+	res := ""
+	for _, pcommitsByAuthor := range commits {
+		author := pcommitsByAuthor.author
+		pcommits := pcommitsByAuthor.pcommits
+		plogin := login(*author.Email, *author.Name)
+		first := true
+		for i, pcommit := range pcommits {
+			if first {
+				res = "See "
+			} else {
+				res = res + ", "
+			}
+			first = false
+			if i == len(pcommits)-1 && i > 0 {
+				res = res + "and "
+			}
+			c := fmt.Sprintf("[commit %s](https://github.com/git/git/commit/%s) [%s]",
+				(*pcommit.SHA)[:7], *pcommit.SHA, pcommit.Author.Date.Format("02 Jan 2006"))
+			res = res + c
+		}
+		res = res + fmt.Sprintf(" by [%s (`%s`)](https://github.com/%s).  \n",
+			*author.Name, plogin, plogin)
+		res = collect(res, *pcommit.Message, "Test-adapted-from")
+		res = collect(res, *pcommit.Message, "Helped-by")
+		res = res + "  "
+	}
+	return res
+}
 
-	res := fmt.Sprintf("See [commit %s](https://github.com/git/git/commit/%s) by [%s (`%s`)](https://github.com/%s), %s.  \n",
-		(*pcommit.SHA)[:7], *pcommit.SHA,
-		*pcommit.Author.Name, plogin, plogin, pcommit.Author.Date.Format("02 Jan 2006"))
-	res = collect(res, *pcommit.Message, "Test-adapted-from")
-	res = collect(res, *pcommit.Message, "Helped-by")
+// for cases like commit a6be52e239df4d4a469a5324273f43a0695fe95d
+func checkParentCommits(apcommit *github.Commit, commitmsg string) map[string]*commitsByAuthor {
+	res := make(map[string]*commitsByAuthor)
+	pcommit, _, err := client.Git.GetCommit("git", "git", *apcommit.SHA)
+	if err != nil {
+		fmt.Printf("Unable to get check parent commit '%s': err '%v'\n", *apcommit.SHA, err)
+		ex.Exit(1)
+	}
+	pdbg.Pdbgf("pcommit %s", *pcommit.SHA)
+	pcommitmsgs := strings.Split(*pcommit.Message, "\n")
+	title := pcommitmsgs[0]
+	pdbg.Pdbgf("title '%s'", title)
+	if strings.Contains(commitmsg, title) {
+		pauthorname := *pcommit.Author.Name
+		pdbg.Pdbgf("pauthorname='%s' for '%v'", pauthorname, pcommit.Author)
+		pcommitsByAuthor := res[pauthorname]
+		if pcommitsByAuthor == nil {
+			pcommitsByAuthor = &commitsByAuthor{pcommit.Author, []*github.Commit{}}
+		}
+		pcommitsByAuthor.pcommits = append(pcommitsByAuthor.pcommits, pcommit)
+		res[pauthorname] = pcommitsByAuthor
+		pdbg.Pdbgf("call checkParentCommits with parents '%+v', pca '%s' for '%s'",
+			pcommit.Parents, pcommitsByAuthor.String(), pauthorname)
+		ppcommits := checkParentCommits(&pcommit.Parents[0], commitmsg)
+		for authorName, pcommitsByAuthor := range ppcommits {
+			acommitsByAuthor := res[authorName]
+			if acommitsByAuthor == nil {
+				res[authorName] = pcommitsByAuthor
+			} else {
+				for _, pc := range pcommitsByAuthor.pcommits {
+					acommitsByAuthor.pcommits = append(acommitsByAuthor.pcommits, pc)
+				}
+				res[authorName] = acommitsByAuthor
+				pdbg.Pdbgf("Put commits '%s' for author '%s'", acommitsByAuthor.String(), authorName)
+			}
+		}
+	}
 	return res
 }
 
