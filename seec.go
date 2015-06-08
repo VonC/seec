@@ -46,7 +46,7 @@ func main() {
 	parent := commit.Parents[1]
 	res := ""
 	res = res + seeCommit(&parent, commit)
-	res = res + fmt.Sprintf("<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>  ",
+	res = res + fmt.Sprintf("\n<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>  ",
 		*commit.Author.Name, clogin, clogin,
 		sha1[:7], sha1, commit.Committer.Date.Format("02 Jan 2006"))
 	fmt.Println(res)
@@ -138,7 +138,10 @@ func seeCommit(parent, commit *github.Commit) string {
 		}
 		res = res + fmt.Sprintf(" by [%s (`%s`)](https://github.com/%s).  \n",
 			*author.Name, plogin, plogin)
+		// seec 777e75b60568b613e452ebbb30a1fb27c4fd7d8a, https://github.com/git/git/commit/777e75b60568b613e452ebbb30a1fb27c4fd7d8a
 		res = collect(res, *pcommit.Message, "Test-adapted-from")
+		// seec 6dec263333417738528089834bd8cda72017aa31, https://github.com/git/git/commit/6dec263333417738528089834bd8cda72017aa31
+		// seec 324a9f41cbf96ad994efc3b20be239116eba0dae, https://github.com/git/git/commit/324a9f41cbf96ad994efc3b20be239116eba0dae
 		res = collect(res, *pcommit.Message, "Helped-by")
 		res = res + "  "
 	}
