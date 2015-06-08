@@ -6,16 +6,22 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/VonC/godbg/exit"
 	"github.com/atotto/clipboard"
 	"github.com/google/go-github/github"
 )
 
 var client *github.Client
+var ex *exit.Exit
+
+func init() {
+	ex = exit.Default()
+}
 
 func main() {
 	if len(os.Args) != 2 {
 		fmt.Println("Usage: go run seec.go <sha1>")
-		os.Exit(0)
+		ex.Exit(0)
 	}
 	sha1 := os.Args[1]
 	client = github.NewClient(nil)
@@ -23,7 +29,7 @@ func main() {
 	commit, _, err := client.Git.GetCommit("git", "git", sha1)
 	if err != nil {
 		fmt.Printf("Unable to get commit '%s': err '%v'\n", sha1, err)
-		os.Exit(1)
+		ex.Exit(1)
 	}
 	if len(commit.Parents) != 2 {
 		fmt.Printf("Sha1 '%s' has '%d' parent(s) instead of 2\n", sha1, len(commit.Parents))
@@ -35,7 +41,7 @@ func main() {
 		pcommit, _, err = client.Git.GetCommit("git", "git", *parent.SHA)
 		if err != nil {
 			fmt.Printf("Unable to get parent commit '%s': err '%v'\n", parent.SHA, err)
-			os.Exit(1)
+			ex.Exit(1)
 		}
 		// fmt.Printf("pcommit '%+v', len %d\n", pcommit, len(pcommit.Parents))
 		if len(pcommit.Parents) == 2 {
@@ -81,7 +87,7 @@ func login(email string, name string) string {
 		res, _, err = client.Search.Users(email, opts)
 		if err != nil {
 			fmt.Printf("Unable to search user '%s': err '%v'", email, err)
-			os.Exit(1)
+			ex.Exit(1)
 		}
 	}
 	if res == nil || *res.Total == 0 {
@@ -89,7 +95,7 @@ func login(email string, name string) string {
 		res, _, err = client.Search.Users(name, opts)
 		if err != nil {
 			fmt.Printf("Unable to search user '%s': err '%v'", name, err)
-			os.Exit(1)
+			ex.Exit(1)
 		}
 	}
 	if res == nil || *res.Total == 0 {
@@ -98,7 +104,7 @@ func login(email string, name string) string {
 		resIssues, _, err = client.Search.Issues(issueSearch, opts)
 		if err != nil {
 			fmt.Printf("Unable to search issue '%s': err '%v'", issueSearch, err)
-			os.Exit(1)
+			ex.Exit(1)
 		}
 		if resIssues == nil || *resIssues.Total == 0 {
 			return ""
