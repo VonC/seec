@@ -46,7 +46,7 @@ func main() {
 	parent := commit.Parents[1]
 	res := ""
 	res = res + seeCommit(&parent, commit)
-	res = res + fmt.Sprintf("\n<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>  ",
+	res = res + fmt.Sprintf("<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>  ",
 		*commit.Author.Name, clogin, clogin,
 		sha1[:7], sha1, commit.Committer.Date.Format("02 Jan 2006"))
 	fmt.Println(res)
@@ -63,7 +63,7 @@ func displayRateLimit() {
 		const layout = "15:04pm (MST)"
 		t := rate.Reset.Time
 		ts := fmt.Sprintf("%s", t.Format(layout))
-		fmt.Printf("API Rate Limit: %d/%d (reset at %s)\n\n", rate.Remaining, rate.Limit, ts)
+		fmt.Printf("\nAPI Rate Limit: %d/%d (reset at %s)\n", rate.Remaining, rate.Limit, ts)
 	}
 }
 
@@ -143,7 +143,6 @@ func seeCommit(parent, commit *github.Commit) string {
 		// seec 6dec263333417738528089834bd8cda72017aa31, https://github.com/git/git/commit/6dec263333417738528089834bd8cda72017aa31
 		// seec 324a9f41cbf96ad994efc3b20be239116eba0dae, https://github.com/git/git/commit/324a9f41cbf96ad994efc3b20be239116eba0dae
 		res = collect(res, *pcommit.Message, "Helped-by")
-		res = res + "  "
 	}
 	return res
 }
@@ -250,7 +249,7 @@ func collect(res, msg, activity string) string {
 		first = false
 	}
 	if !first {
-		res = res + "\n" + activitymsg + "  "
+		res = res + activitymsg + "  \n"
 	}
 	return res
 }
