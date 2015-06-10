@@ -5,6 +5,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/VonC/godbg"
 	"github.com/VonC/godbg/exit"
@@ -73,7 +74,12 @@ func displayRateLimit() {
 
 type commitsByAuthor struct {
 	author   *github.CommitAuthor
-	pcommits []*github.Commit
+}
+
+// Because of seec 709cd912d4663af87903d3d278a3bab9d4d84153
+type commitsByDate struct {
+	date   *time.Time
+	commits []*github.Commit
 }
 
 func (cba *commitsByAuthor) String() string {
