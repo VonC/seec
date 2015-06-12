@@ -216,6 +216,33 @@ func checkParentCommits(apcommit *github.Commit, commitmsg string) map[string]*c
 	return res
 }
 
+func (cba *commitsByAuthor) addCommit(commit *github.Commit) {
+	date := commit.Author.Date.Format("02 Jan 2006")
+	for _, cbd := range cba.cbd {
+		if cbd.date.Format("02 Jan 2006") == date {
+			cbd.commits = append(cbd.commits, commit)
+			return
+		}
+	}
+	cba.cbd = append(cba.cbd, &commitsByDate{commit.Author.Date, []*github.Commit{commit}})
+}
+
+func (cba *commitsByAuthor) addCba(acba *commitsByAuthor) {
+	for _, acbd := range acba.cbd {
+		date := acbd.date.Format("02 Jan 2006")
+		found := false
+		for _, cbd := range cba.cbd {
+			if cbd.date.Format("02 Jan 2006") == date {
+				found = true
+				cbd.commits = append(cbd.commits, acbd.commits...)
+			}
+		}
+		if !found {
+			cba.cbd = append(cba.cbd, acba.cbd...)
+		}
+	}
+}
+
 func login(email string, name string) string {
 	opts := &github.SearchOptions{Order: "desc"}
 	var res *github.UsersSearchResult
