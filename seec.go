@@ -193,9 +193,9 @@ func checkParentCommits(apcommit *github.Commit, commitmsg string) map[string]*c
 		pdbg.Pdbgf("pauthorname='%s' for '%v'", pauthorname, pcommit.Author)
 		pcommitsByAuthor := res[pauthorname]
 		if pcommitsByAuthor == nil {
-			pcommitsByAuthor = &commitsByAuthor{pcommit.Author, []*github.Commit{}}
+			pcommitsByAuthor = &commitsByAuthor{pcommit.Author, []*commitsByDate{}}
 		}
-		pcommitsByAuthor.pcommits = append(pcommitsByAuthor.pcommits, pcommit)
+		pcommitsByAuthor.addCommit(pcommit)
 		res[pauthorname] = pcommitsByAuthor
 		pdbg.Pdbgf("call checkParentCommits with parents '%+v', pca '%s' for '%s'",
 			pcommit.Parents, pcommitsByAuthor.String(), pauthorname)
@@ -205,9 +205,7 @@ func checkParentCommits(apcommit *github.Commit, commitmsg string) map[string]*c
 			if acommitsByAuthor == nil {
 				res[authorName] = pcommitsByAuthor
 			} else {
-				for _, pc := range pcommitsByAuthor.pcommits {
-					acommitsByAuthor.pcommits = append(acommitsByAuthor.pcommits, pc)
-				}
+				acommitsByAuthor.addCba(pcommitsByAuthor)
 				res[authorName] = acommitsByAuthor
 				pdbg.Pdbgf("Put commits '%s' for author '%s'", acommitsByAuthor.String(), authorName)
 			}
