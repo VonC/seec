@@ -141,29 +141,38 @@ func seeCommit(parent, commit *github.Commit) string {
 	commits = checkParentCommits(apcommit, *commit.Message)
 	if len(commits) == 0 {
 		pauthorname := *pcommit.Author.Name
-		pcommitsByAuthor := &commitsByAuthor{pcommit.Author, []*github.Commit{pcommit}}
+		pcommitsByAuthor := &commitsByAuthor{pcommit.Author, []*commitsByDate{&commitsByDate{pcommit.Author.Date, []*github.Commit{pcommit}}}}
 		commits[pauthorname] = pcommitsByAuthor
 		pdbg.Pdbgf("Put single commit '%s' for author '%s'", pcommitsByAuthor, pauthorname)
 	}
 	res := ""
 	for _, pcommitsByAuthor := range commits {
 		author := pcommitsByAuthor.author
-		pcommits := pcommitsByAuthor.pcommits
-		plogin := login(*author.Email, *author.Name)
+		commitsbd := pcommitsByAuthor.cbd
 		first := true
-		for i, pcommit := range pcommits {
+		plogin := login(*author.Email, *author.Name)
+		for i, cbd := range commitsbd {
 			if first {
-				res = "See "
+				res = res + "See "
 			} else {
 				res = res + ", "
 			}
 			first = false
-			if i == len(pcommits)-1 && i > 0 {
+			if i == len(commitsbd)-1 && i > 0 {
 				res = res + "and "
 			}
-			c := fmt.Sprintf("[commit %s](https://github.com/git/git/commit/%s) [%s]",
-				(*pcommit.SHA)[:7], *pcommit.SHA, pcommit.Author.Date.Format("02 Jan 2006"))
-			res = res + c
+			commits := cbd.commits
+			firstc := true
+			for _, commit := range commits {
+				if !firstc {
+					res = res + ", "
+				}
+				firstc = false
+				c := fmt.Sprintf("[commit %s](https://github.com/git/git/commit/%s)",
+					(*commit.SHA)[:7], *commit.SHA)
+				res = res + c
+			}
+			res = res + fmt.Sprintf(" (%s)", cbd.date.Format("02 Jan 2006"))
 		}
 		res = res + fmt.Sprintf(" by [%s (`%s`)](https://github.com/%s).  \n",
 			*author.Name, plogin, plogin)
