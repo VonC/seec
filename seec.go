@@ -197,6 +197,8 @@ func seeCommit(parent, commit *github.Commit) string {
 		}
 		res = res + fmt.Sprintf(" by [%s (`%s`)](https://github.com/%s).  \n",
 			*author.Name, plogin, plogin)
+		// seec 8cc88166c00e555f1bf5375017ed91b7e2cc904e, https://github.com/git/git/commit/8cc88166c00e555f1bf5375017ed91b7e2cc904e
+		res = collect(res, *pcommit.Message, "Suggested-by")
 		// seec 777e75b60568b613e452ebbb30a1fb27c4fd7d8a, https://github.com/git/git/commit/777e75b60568b613e452ebbb30a1fb27c4fd7d8a
 		res = collect(res, *pcommit.Message, "Test-adapted-from")
 		// seec 6dec263333417738528089834bd8cda72017aa31, https://github.com/git/git/commit/6dec263333417738528089834bd8cda72017aa31
