@@ -291,17 +291,18 @@ func login(email string, name string, SHA string) string {
 			ex.Exit(1)
 		}
 	}
+	nameNoDash := name
 	if res == nil || *res.Total == 0 {
-		name = strings.Replace(name, "-", " ", -1)
-		res, _, err = client.Search.Users(name, opts)
+		nameNoDash = strings.Replace(name, "-", " ", -1)
+		res, _, err = client.Search.Users(nameNoDash, opts)
 		if err != nil {
-			fmt.Printf("Unable to search user '%s': err '%v'", name, err)
+			fmt.Printf("Unable to search user '%s': err '%v'", nameNoDash, err)
 			ex.Exit(1)
 		}
 	}
 	if res == nil || *res.Total == 0 {
 		var resIssues *github.IssuesSearchResult
-		issueSearch := fmt.Sprintf(`"Signed-off-by: %s <%s>"`, name, email)
+		issueSearch := fmt.Sprintf(`"Signed-off-by: %s <%s>"`, nameNoDash, email)
 		resIssues, _, err = client.Search.Issues(issueSearch, opts)
 		if err != nil {
 			fmt.Printf("Unable to search issue '%s': err '%v'", issueSearch, err)
