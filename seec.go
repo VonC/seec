@@ -45,15 +45,31 @@ func main() {
 		fmt.Printf("Unable to get commit '%s': err '%v'\n", sha1, err)
 		ex.Exit(1)
 	}
-	if len(commit.Parents) != 2 {
-		fmt.Printf("Sha1 '%s' has '%d' parent(s) instead of 2\n", sha1, len(commit.Parents))
+	parent := *commit
+	if len(commit.Parents) == 2 {
+		parent = commit.Parents[1]
 	}
-	clogin := login(*commit.Author.Email, *commit.Author.Name)
-	parent := commit.Parents[1]
+	if len(commit.Parents) > 2 {
+		fmt.Printf("Sha1 '%s' has '%d' parent(s) instead of 2\n", sha1, len(commit.Parents))
+		ex.Exit(1)
+	}
+	// fmt.Printf("commit='%+v'\n", commit)
+	// fmt.Printf("commit.Author='%+v'\n", commit.Author)
+	clogin := ""
+	cname := ""
+	if *parent.SHA != *commit.SHA {
+		clogin = login(*commit.Author.Email, *commit.Author.Name, *commit.SHA)
+		cname = *commit.Author.Name
+	} else {
+		clogin = login(*commit.Committer.Email, *commit.Committer.Name, "")
+		cname = *commit.Committer.Name
+	}
+	// fmt.Printf("clogin='%s'", clogin)
+	// ex.Exit(0)
 	res := ""
 	res = res + seeCommit(&parent, commit)
 	res = res + fmt.Sprintf("<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>  ",
-		*commit.Author.Name, clogin, clogin,
+		cname, clogin, clogin,
 		sha1[:7], sha1, commit.Committer.Date.Format("02 Jan 2006"))
 	fmt.Println(res)
 	clipboard.WriteAll(res)
