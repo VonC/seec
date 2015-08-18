@@ -15,6 +15,6 @@ if not exist "%~dp0\deps\%src%" (
 set GOPATH=%~dp0/deps
 set GOBIN=%~dp0/bin
 cd "%~dp0"
-go install
+call go install
 endlocal
-doskey seec=%~dp0\bin\seec.exe $*
+echo doskey seec=%~dp0bin\seec.exe $*
