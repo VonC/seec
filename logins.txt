@@ -3,3 +3,4 @@ gitster@pobox.com#~#Junio C Hamano^()^gitster
 mhagger@alum.mit.edu#~#Michael Haggerty^()^mhagger
 szeder@ira.uka.de#~#SZEDER Gábor^()^szeder
 me@ikke.info#~#Kevin Daudt^()^Ikke
+peff@peff.net#~#Jeff King^()^peff
