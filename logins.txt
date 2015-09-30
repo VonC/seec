@@ -5,3 +5,9 @@ szeder@ira.uka.de#~#SZEDER Gábor^()^szeder
 me@ikke.info#~#Kevin Daudt^()^Ikke
 peff@peff.net#~#Jeff King^()^peff
 gitter.spiros@gmail.com#~#Elia Pinto^()^devzero2000
+karthik.188@gmail.com#~#Karthik Nayak^()^KarthikNayak
+Matthieu.Moy@imag.fr#~#Matthieu Moy^()^moy
+antoine.delaite@ensimag.grenoble-inp.fr#~#Antoine Delaite^()^CanardChouChinois
+juerg.haefliger@hp.com#~#Juerg Haefliger^()^gitster
+john@keeping.me.uk#~#John Keeping^()^johnkeeping
+mathstuf@gmail.com#~#Ben Boeckel^()^mathstuf
