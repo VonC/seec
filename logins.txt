@@ -11,3 +11,4 @@ antoine.delaite@ensimag.grenoble-inp.fr#~#Antoine Delaite^()^CanardChouChinois
 juerg.haefliger@hp.com#~#Juerg Haefliger^()^gitster
 john@keeping.me.uk#~#John Keeping^()^johnkeeping
 mathstuf@gmail.com#~#Ben Boeckel^()^mathstuf
+pclouds@gmail.com#~#Nguyễn Thái Ngọc Duy^()^pclouds
