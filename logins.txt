@@ -8,7 +8,19 @@ gitter.spiros@gmail.com#~#Elia Pinto^()^devzero2000
 karthik.188@gmail.com#~#Karthik Nayak^()^KarthikNayak
 Matthieu.Moy@imag.fr#~#Matthieu Moy^()^moy
 antoine.delaite@ensimag.grenoble-inp.fr#~#Antoine Delaite^()^CanardChouChinois
-juerg.haefliger@hp.com#~#Juerg Haefliger^()^gitster
+juerg.haefliger@hp.com#~#Juerg Haefliger^()^unknown
 john@keeping.me.uk#~#John Keeping^()^johnkeeping
 mathstuf@gmail.com#~#Ben Boeckel^()^mathstuf
 pclouds@gmail.com#~#Nguyễn Thái Ngọc Duy^()^pclouds
+sschuberth@gmail.com#~#Sebastian Schuberth^()^sschuberth
+sandals@crustytoothpaste.net#~#brian m. carlson^()^bk2204
+karsten.blees@gmail.com#~#Karsten Blees^()^kblees
+remi.lespinet@ensimag.grenoble-inp.fr#~#Remi Lespinet^()^Awaryn
+rappazzo@gmail.com#~#Michael Rappazzo^()^rappazzo
+peff@peff.net#~#Jeff King^()^peff
+pyokagan@gmail.com#~#Paul Tan^()^pyokagan
+guillaume.pages@ensimag.grenoble-inp.fr#~#Guillaume Pagès^()^unknown
+dturner@twopensource.com#~#David Turner^()^dturner-tw
+jacob.keller@gmail.com#~#Jacob Keller^()^jacob-keller
+johannes.schindelin@gmx.de#~#Johannes Schindelin^()^dscho
+vega.james@gmail.com#~#James McCoy^()^jamessan
