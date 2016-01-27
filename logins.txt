@@ -24,3 +24,9 @@ dturner@twopensource.com#~#David Turner^()^dturner-tw
 jacob.keller@gmail.com#~#Jacob Keller^()^jacob-keller
 johannes.schindelin@gmx.de#~#Johannes Schindelin^()^dscho
 vega.james@gmail.com#~#James McCoy^()^jamessan
+mac@mcrowe.com#~#Mike Crowe^()^mikecrowe
+jrnieder@gmail.com#~#Jonathan Nieder^()^artagnon
+sbeller@google.com#~#Stefan Beller^()^stefanbeller
+vleschuk@gmail.com#~#Victor Leschuk^()^vleschuk
+mh@glandium.org#~#Mike Hommey^()^glandium
+normalperson@yhbt.net#~#Eric Wong^()^ele828
