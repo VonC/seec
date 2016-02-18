@@ -30,3 +30,11 @@ sbeller@google.com#~#Stefan Beller^()^stefanbeller
 vleschuk@gmail.com#~#Victor Leschuk^()^vleschuk
 mh@glandium.org#~#Mike Hommey^()^glandium
 normalperson@yhbt.net#~#Eric Wong^()^ele828
+tboegi@web.de#~#Torsten Bögershausen^()^tboegi
+t.gummerer@gmail.com#~#Thomas Gummerer^()^tgummerer
+pedrorijo91@gmail.com#~#pedro rijo^()^pedrorijo91
+larsxschneider@gmail.com#~#Lars Schneider^()^larsxschneider
+awheeler@motorola.com#~#Andrew Wheeler^()^awheels
+wmpalmer@gmail.com#~#Will Palmer^()^wpalmer
+alonid@gmail.com#~#Dan Aloni^()^da-x
+dicksonwong@gmail.com#~#Dickson Wong^()^diwo
