@@ -2,3 +2,5 @@
 coverage.out
 deps/pkg/
 bin/
+/src/
+/pkg/
