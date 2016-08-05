@@ -46,7 +46,8 @@ func main() {
 		fmt.Printf("Unable to get commit '%s': err '%v'\n", sha1, err)
 		ex.Exit(1)
 	}
-	parent := *commit
+	res := ""
+	var parent github.Commit
 	if len(commit.Parents) == 2 {
 		parent = commit.Parents[1]
 	}
@@ -61,13 +62,13 @@ func main() {
 	if *parent.SHA != *commit.SHA {
 		clogin = login(*commit.Author.Email, *commit.Author.Name, *commit.SHA)
 		cname = *commit.Author.Name
+		res = res + seeCommit(&parent, commit)
 	} else {
 		clogin = login(*commit.Committer.Email, *commit.Committer.Name, "")
 		cname = *commit.Committer.Name
 	}
 	// fmt.Printf("clogin='%s'", clogin)
 	// ex.Exit(0)
-	res := ""
 	res = res + fmt.Sprintf("<sup>(Merged by [%s -- `%s` --](https://github.com/%s) in [commit %s](https://github.com/git/git/commit/%s), %s)</sup>  ",
 		cname, clogin, clogin,
 		sha1[:7], sha1, commit.Committer.Date.Format("02 Jan 2006"))
@@ -75,6 +76,10 @@ func main() {
 	clipboard.WriteAll(res)
 	fmt.Println("(Copied to the clipboard)")
 	displayRateLimit()
+}
+
+func seeCommit(parent, commit *github.Commit) string {
+	return "_"
 }
 
 func displayRateLimit() {
