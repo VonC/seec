@@ -33,12 +33,6 @@
 			"revisionTime": "2016-03-11T01:20:12Z"
 		},
 		{
-			"checksumSHA1": "d22rgDYcZ/l1RPHtCokJRHAh0QI=",
-			"path": "github.com/gopherjs/gopherjs/js",
-			"revision": "72e303cb5f235b23471872477b57e573dc1c71d0",
-			"revisionTime": "2016-07-16T15:30:12Z"
-		},
-		{
 			"checksumSHA1": "T4PaLboFtj3ClK/pPvbiHxYwJd0=",
 			"path": "github.com/jtolds/gls",
 			"revision": "8ddce2a84170772b95dd5d576c48d517b22cac63",
