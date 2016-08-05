@@ -35,6 +35,7 @@ func main() {
 	if len(os.Args) != 2 {
 		fmt.Println("Usage:       go run seec.go <sha1>")
 		fmt.Println("       dbg=1 go run seec.go <sha1> for debug information")
+		fmt.Println(`       cmd /v /c "set dbg=1 && bin\seec* <sha1>" for debug information`)
 		ex.Exit(0)
 	}
 	sha1 := os.Args[1]
