@@ -38,3 +38,15 @@ awheeler@motorola.com#~#Andrew Wheeler^()^awheels
 wmpalmer@gmail.com#~#Will Palmer^()^wpalmer
 alonid@gmail.com#~#Dan Aloni^()^da-x
 dicksonwong@gmail.com#~#Dickson Wong^()^diwo
+spearce@spearce.org#~#Shawn Pearce^()^spearce
+christoph@christoph-egger.org#~#Christoph Egger^()^siccegge
+zhanglei002@gmail.com#~#Ray Zhang^()^OneRaynyDay
+k@rhe.jp#~#Kazuki Yamaguchi^()^rhenium
+e@80x24.org#~#Eric Wong^()^ele828
+christian.couder@gmail.com#~#Christian Couder^()^chriscool
+avarab@gmail.com#~#Ævar Arnfjörð Bjarmason^()^avar
+mehul.jain2029@gmail.com#~#Mehul Jain^()^mehul2029
+jacobgodserv@gmail.com#~#Jacob Godserv^()^javaJake
+clayne@anodized.com#~#Christopher Layne^()^clayne
+ps@pks.im#~#Patrick Steinhardt^()^pks-t
+dak@gnu.org#~#David Kastrup^()^fedelibre
