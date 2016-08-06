@@ -79,6 +79,23 @@ func main() {
 }
 
 func seeCommit(parent, commit *github.Commit) string {
+	var pcommit *github.Commit
+	var err error
+	for pcommit == nil {
+		pcommit, _, err = client.Git.GetCommit("git", "git", *parent.SHA)
+		if err != nil {
+			fmt.Printf("Unable to get parent commit '%s': err '%v'\n", parent.SHA, err)
+			ex.Exit(1)
+		}
+		// fmt.Printf("pcommit '%+v', len %d\n", pcommit, len(pcommit.Parents))
+		if len(pcommit.Parents) == 2 {
+			parent = &pcommit.Parents[1]
+			pcommit = nil
+		} else {
+			break
+		}
+	}
+	pdbg.Pdbgf("Parent commit '%s'", *pcommit.SHA)
 	return "_"
 }
 
