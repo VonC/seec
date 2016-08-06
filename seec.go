@@ -16,6 +16,8 @@ import (
 	"github.com/VonC/godbg/exit"
 	"github.com/atotto/clipboard"
 	"github.com/google/go-github/github"
+
+	"golang.org/x/oauth2"
 )
 
 var client *github.Client
@@ -39,7 +41,16 @@ func main() {
 		ex.Exit(0)
 	}
 	sha1 := os.Args[1]
-	client = github.NewClient(nil)
+	token := os.Getenv("GITHUB_AUTH_TOKEN")
+	if token == "" {
+		print("!!! No OAuth token. Limited API rate 60 per hour. !!!\n\n")
+		client = github.NewClient(nil)
+	} else {
+		tc := oauth2.NewClient(oauth2.NoContext, oauth2.StaticTokenSource(
+			&oauth2.Token{AccessToken: token},
+		))
+		client = github.NewClient(tc)
+	}
 	displayRateLimit()
 	commit, _, err := client.Git.GetCommit("git", "git", sha1)
 	if err != nil {
