@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"seec2/internal/gh"
+
 	"github.com/VonC/godbg"
 	"github.com/VonC/godbg/exit"
 )
@@ -18,6 +20,7 @@ func init() {
 	} else {
 		pdbg = godbg.NewPdbg(godbg.OptExcludes([]string{"/seec.go"}))
 	}
+	gh.GHex = ex
 }
 
 func main() {
@@ -28,5 +31,7 @@ func main() {
 		ex.Exit(0)
 	}
 	sha1 := os.Args[1]
-	pdbg.Pdbgf("sha1: %s", sha1)
+	gh.DisplayRateLimit()
+	commit := gh.MustGetCommit(sha1)
+	pdbg.Pdbgf("commit: %s", commit)
 }
