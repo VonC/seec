@@ -68,5 +68,16 @@ func main() {
 func seeCommit(parent, commit *gh.Commit) string {
 	pcommit := gh.FirstSingleParentCommit(parent)
 	pdbg.Pdbgf("seeCommit '%s' => pcommit '%s'", parent, pcommit)
+	apcommit := pcommit
+	if pcommit.SameAuthor(commit) {
+		pdbg.Pdbgf("Same author '%s', so call checkParentCommits\nInitial message: '%s'", *pcommit.Author.Name, *commit.Message)
+		apcommit = pcommit.FirstParent()
+	}
+	commits := checkParentCommits(apcommit, *commit.Message)
+	pdbg.Pdbgf("commitsByAuthors '%s'", commits)
+	return ""
+}
+
+func checkParentCommits(apcommit *gh.Commit, commitmsg string) string {
 	return ""
 }

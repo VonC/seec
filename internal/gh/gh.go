@@ -48,12 +48,19 @@ func (c *Commit) CommitterDate() string {
 	return c.Committer.Date.Format("02 Jan 2006")
 }
 
+func (c *Commit) FirstParent() *Commit {
+	return &Commit{&c.Parents[0]}
+}
 func (c *Commit) SecondParent() *Commit {
 	return &Commit{&c.Parents[1]}
 }
 
 func (c *Commit) SameSHA1(c2 *Commit) bool {
 	return *c.SHA == *c2.SHA
+}
+
+func (c *Commit) SameAuthor(c2 *Commit) bool {
+	return *c.Author.Name == *c2.Author.Name
 }
 
 func MustGetCommit(sha1 string) *Commit {
