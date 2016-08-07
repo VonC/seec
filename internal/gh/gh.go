@@ -31,8 +31,13 @@ type Commit struct {
 }
 
 func (c *Commit) String() string {
-	return fmt.Sprintf("commit '%s' from '%s', date '%s'",
-		*c.SHA, *c.Author.Name, c.Author.Date.Format("02 Jan 2006"))
+	f := ""
+	if c.Author != nil {
+		f = fmt.Sprintf(" from '%s', date '%s'",
+			*c.Author.Name, c.Author.Date.Format("02 Jan 2006"))
+	}
+	return fmt.Sprintf("commit '%s'%s",
+		*c.SHA, f)
 }
 
 func (c *Commit) NbParents() int {
@@ -58,6 +63,26 @@ func MustGetCommit(sha1 string) *Commit {
 		GHex.Exit(1)
 	}
 	return &Commit{commit}
+}
+
+func FirstSingleParentCommit(parent *Commit) *Commit {
+	var pcommit *github.Commit
+	var err error
+	for pcommit == nil {
+		pcommit, _, err = Client.Git.GetCommit("git", "git", *parent.SHA)
+		if err != nil {
+			fmt.Printf("Unable to get parent commit '%s': err '%v'\n", parent.SHA, err)
+			GHex.Exit(1)
+		}
+		// fmt.Printf("pcommit '%+v', len %d\n", pcommit, len(pcommit.Parents))
+		if len(pcommit.Parents) == 2 {
+			parent = &Commit{&pcommit.Parents[1]}
+			pcommit = nil
+		} else {
+			break
+		}
+	}
+	return &Commit{pcommit}
 }
 
 func DisplayRateLimit() {

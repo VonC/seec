@@ -66,5 +66,7 @@ func main() {
 }
 
 func seeCommit(parent, commit *gh.Commit) string {
+	pcommit := gh.FirstSingleParentCommit(parent)
+	pdbg.Pdbgf("seeCommit '%s' => pcommit '%s'", parent, pcommit)
 	return ""
 }
