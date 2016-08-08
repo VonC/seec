@@ -95,11 +95,14 @@ func checkParentCommits(pcommit *gh.Commit, commitmsg string) commits.CommitsByA
 			pcommitsByAuthor = commits.NewCommitsByAuthor(pauthorname)
 		}
 		pcommitsByAuthor.AddCommit(pcommit)
+		pdbg.Pdbgf("pcommitsByAuthor BEFOR='%s'", pcommitsByAuthor)
 		res[pauthorname] = pcommitsByAuthor
+		pdbg.Pdbgf("res BEFOR='%s'", res)
 		pdbg.Pdbgf("call checkParentCommits with parents '%+v', pca '%s' for '%s'",
 			pcommit.Parents, pcommitsByAuthor.String(), pauthorname)
 		ppcommits := checkParentCommits(pcommit.FirstParent(), commitmsg)
 		res.Add(ppcommits)
+		pdbg.Pdbgf("res AFTER='%s'", res)
 	}
 	return res
 }

@@ -28,6 +28,11 @@ func init() {
 
 type Commit struct {
 	*github.Commit
+	authorDate string
+}
+
+func NewCommit(ghc *github.Commit) *Commit {
+	return &Commit{ghc, ""}
 }
 
 func (c *Commit) String() string {
@@ -44,15 +49,26 @@ func (c *Commit) NbParents() int {
 	return len(c.Parents)
 }
 
+func (c *Commit) AuthorDate() string {
+	if c.authorDate != "" {
+		return c.authorDate
+	}
+	if c.Message == nil {
+		c.Commit = MustGetCommit(*c.SHA).Commit
+	}
+	c.authorDate = c.Committer.Date.Format("02 Jan 2006")
+	return c.authorDate
+}
+
 func (c *Commit) CommitterDate() string {
 	return c.Committer.Date.Format("02 Jan 2006")
 }
 
 func (c *Commit) FirstParent() *Commit {
-	return &Commit{&c.Parents[0]}
+	return NewCommit(&c.Parents[0])
 }
 func (c *Commit) SecondParent() *Commit {
-	return &Commit{&c.Parents[1]}
+	return NewCommit(&c.Parents[1])
 }
 
 func (c *Commit) SameSHA1(c2 *Commit) bool {
@@ -80,7 +96,7 @@ func MustGetCommit(sha1 string) *Commit {
 		fmt.Printf("Unable to get commit '%s': err '%v'\n", sha1, err)
 		GHex.Exit(1)
 	}
-	return &Commit{commit}
+	return NewCommit(commit)
 }
 
 func FirstSingleParentCommit(parent *Commit) *Commit {
@@ -94,13 +110,13 @@ func FirstSingleParentCommit(parent *Commit) *Commit {
 		}
 		// fmt.Printf("pcommit '%+v', len %d\n", pcommit, len(pcommit.Parents))
 		if len(pcommit.Parents) == 2 {
-			parent = &Commit{&pcommit.Parents[1]}
+			parent = NewCommit(&pcommit.Parents[1])
 			pcommit = nil
 		} else {
 			break
 		}
 	}
-	return &Commit{pcommit}
+	return NewCommit(pcommit)
 }
 
 func DisplayRateLimit() {

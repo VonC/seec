@@ -2,11 +2,8 @@ package commits
 
 import (
 	"fmt"
-	"time"
 
 	"seec2/internal/gh"
-
-	"github.com/google/go-github/github"
 )
 
 type CommitsByAuthor struct {
@@ -17,8 +14,8 @@ type CommitsByAuthors map[string]*CommitsByAuthor
 
 // Because of seec 709cd912d4663af87903d3d278a3bab9d4d84153
 type CommitsByDate struct {
-	date    *time.Time
-	commits []*github.Commit
+	date    string
+	commits []*gh.Commit
 }
 
 func (cba *CommitsByAuthor) String() string {
@@ -50,7 +47,7 @@ func (cbd *CommitsByDate) String() string {
 		}
 		res = res + (*commit.SHA)[:7]
 	}
-	return fmt.Sprintf("%s (%s)", res, cbd.date.Format("02 Jan 2006"))
+	return fmt.Sprintf("%s (%s)", res, cbd.date)
 }
 
 func NewCommitsByAuthor(authorname string) *CommitsByAuthor {
@@ -58,9 +55,41 @@ func NewCommitsByAuthor(authorname string) *CommitsByAuthor {
 }
 
 func (cbas CommitsByAuthors) Add(somecbas CommitsByAuthors) {
+	for authorName, pcommitsByAuthor := range somecbas {
+		acommitsByAuthor := cbas[authorName]
+		if acommitsByAuthor == nil {
+			cbas[authorName] = pcommitsByAuthor
+		} else {
+			acommitsByAuthor.addCba(pcommitsByAuthor)
+			cbas[authorName] = acommitsByAuthor
+			// pdbg.Pdbgf("Put commits '%s' for author '%s'", acommitsByAuthor.String(), authorName)
+		}
+	}
+}
 
+func (cba *CommitsByAuthor) addCba(acba *CommitsByAuthor) {
+	for _, acbd := range acba.cbd {
+		date := acbd.date
+		found := false
+		for _, cbd := range cba.cbd {
+			if cbd.date == date {
+				found = true
+				cbd.commits = append(cbd.commits, acbd.commits...)
+			}
+		}
+		if !found {
+			cba.cbd = append(cba.cbd, acba.cbd...)
+		}
+	}
 }
 
 func (cba *CommitsByAuthor) AddCommit(commit *gh.Commit) {
-
+	date := commit.AuthorDate()
+	for _, cbd := range cba.cbd {
+		if cbd.date == date {
+			cbd.commits = append(cbd.commits, commit)
+			return
+		}
+	}
+	cba.cbd = append(cba.cbd, &CommitsByDate{commit.AuthorDate(), []*gh.Commit{commit}})
 }
