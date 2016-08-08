@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"seec2/internal/commits"
 	"seec2/internal/gh"
@@ -79,7 +80,9 @@ func seeCommit(parent, commit *gh.Commit) string {
 	return ""
 }
 
-func checkParentCommits(apcommit *gh.Commit, commitmsg string) commits.CommitsByAuthors {
+func checkParentCommits(pcommit *gh.Commit, commitmsg string) commits.CommitsByAuthors {
 	res := make(commits.CommitsByAuthors)
+	pcommitmsgs := strings.Split(pcommit.MessageC(), "\n")
+	pdbg.Pdbgf("pcommit message '%d'", len(pcommitmsgs))
 	return res
 }

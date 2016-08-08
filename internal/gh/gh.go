@@ -63,6 +63,10 @@ func (c *Commit) SameAuthor(c2 *Commit) bool {
 	return *c.Author.Name == *c2.Author.Name
 }
 
+func (c *Commit) MessageC() string {
+	return *c.Message
+}
+
 func MustGetCommit(sha1 string) *Commit {
 	commit, _, err := Client.Git.GetCommit("git", "git", sha1)
 	if err != nil {
