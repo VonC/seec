@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"time"
 
+	"seec2/internal/gh"
+
 	"github.com/google/go-github/github"
 )
 
 type CommitsByAuthor struct {
-	author *github.CommitAuthor
+	author string
 	cbd    []*CommitsByDate
 }
 type CommitsByAuthors map[string]*CommitsByAuthor
@@ -32,7 +34,7 @@ func (cba *CommitsByAuthor) String() string {
 		}
 		res = res + acbd.String()
 	}
-	return fmt.Sprintf("%s=>%s", *cba.author.Name, res)
+	return fmt.Sprintf("%s=>%s", cba.author, res)
 }
 
 func (cbd *CommitsByDate) String() string {
@@ -49,4 +51,16 @@ func (cbd *CommitsByDate) String() string {
 		res = res + (*commit.SHA)[:7]
 	}
 	return fmt.Sprintf("%s (%s)", res, cbd.date.Format("02 Jan 2006"))
+}
+
+func NewCommitsByAuthor(authorname string) *CommitsByAuthor {
+	return &CommitsByAuthor{authorname, []*CommitsByDate{}}
+}
+
+func (cbas CommitsByAuthors) Add(somecbas CommitsByAuthors) {
+
+}
+
+func (cba *CommitsByAuthor) AddCommit(commit *gh.Commit) {
+
 }

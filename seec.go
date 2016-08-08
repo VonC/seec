@@ -82,7 +82,24 @@ func seeCommit(parent, commit *gh.Commit) string {
 
 func checkParentCommits(pcommit *gh.Commit, commitmsg string) commits.CommitsByAuthors {
 	res := make(commits.CommitsByAuthors)
+	pdbg.Pdbgf("pcommit '%s'", pcommit)
 	pcommitmsgs := strings.Split(pcommit.MessageC(), "\n")
 	pdbg.Pdbgf("pcommit message '%d'", len(pcommitmsgs))
+	title := pcommitmsgs[0]
+	pdbg.Pdbgf("title '%s'", title)
+	if strings.Contains(commitmsg, title) {
+		pauthorname := pcommit.AuthorName()
+		pdbg.Pdbgf("pauthorname='%s' for '%v'", pauthorname, pcommit.Author)
+		pcommitsByAuthor := res[pauthorname]
+		if pcommitsByAuthor == nil {
+			pcommitsByAuthor = commits.NewCommitsByAuthor(pauthorname)
+		}
+		pcommitsByAuthor.AddCommit(pcommit)
+		res[pauthorname] = pcommitsByAuthor
+		pdbg.Pdbgf("call checkParentCommits with parents '%+v', pca '%s' for '%s'",
+			pcommit.Parents, pcommitsByAuthor.String(), pauthorname)
+		ppcommits := checkParentCommits(pcommit.FirstParent(), commitmsg)
+		res.Add(ppcommits)
+	}
 	return res
 }

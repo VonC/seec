@@ -64,7 +64,14 @@ func (c *Commit) SameAuthor(c2 *Commit) bool {
 }
 
 func (c *Commit) MessageC() string {
+	if c.Message == nil {
+		c.Commit = MustGetCommit(*c.SHA).Commit
+	}
 	return *c.Message
+}
+
+func (c *Commit) AuthorName() string {
+	return *c.Author.Name
 }
 
 func MustGetCommit(sha1 string) *Commit {
