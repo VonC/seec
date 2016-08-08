@@ -13,7 +13,7 @@ set prjname=%prjname:~0,-1%
 for %%i in ("%prjname%") do set "prjname=%%~ni"
 echo prjname='%prjname%'
 
-mkdir /F %~dp0..\_gopaths\%prjname%_gopath\src 2> NUL
+mkdir %~dp0..\_gopaths\%prjname%_gopath\src 2> NUL
 pushd %~dp0..\_gopaths\%prjname%_gopath
 set GOPATH=%CD%
 popd
