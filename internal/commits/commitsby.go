@@ -3,8 +3,8 @@ package commits
 import (
 	"fmt"
 
-	"seec2/internal/gh"
-	"seec2/internal/users"
+	"seec/internal/gh"
+	"seec/internal/users"
 )
 
 type CommitsByAuthor struct {

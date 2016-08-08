@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
-	"seec2/internal/gh"
+	"seec/internal/gh"
 	"strings"
 
 	"github.com/google/go-github/github"

@@ -6,9 +6,9 @@ import (
 	"regexp"
 	"strings"
 
-	"seec2/internal/commits"
-	"seec2/internal/gh"
-	"seec2/internal/users"
+	"seec/internal/commits"
+	"seec/internal/gh"
+	"seec/internal/users"
 
 	"github.com/VonC/godbg"
 	"github.com/VonC/godbg/exit"
