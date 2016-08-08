@@ -16,7 +16,8 @@ var Client *github.Client
 func init() {
 	token := os.Getenv("GITHUB_AUTH_TOKEN")
 	if token == "" {
-		print("!!! No OAuth token. Limited API rate 60 per hour. !!!\n\n")
+		print("!!! No OAuth token. Limited API rate 60 per hour. !!!\n")
+		print("Set GITHUB_AUTH_TOKEN environment variable to your GitHub PTA\n\n")
 		Client = github.NewClient(nil)
 	} else {
 		tc := oauth2.NewClient(oauth2.NoContext, oauth2.StaticTokenSource(
