@@ -31,6 +31,10 @@ func CommitterNameAndLogin(c *gh.Commit) *User {
 	return &User{Login: clogin, Name: cname}
 }
 
+func Login(email string, name string) string {
+	return login(email, name, "")
+}
+
 func login(email string, name string, SHA string) string {
 	fmt.Printf("email='%s', name='%s'\n", email, name)
 	if login := cacheLogins(email, name); login != "" {

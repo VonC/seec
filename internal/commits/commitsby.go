@@ -4,13 +4,14 @@ import (
 	"fmt"
 
 	"seec2/internal/gh"
+	"seec2/internal/users"
 )
 
 type CommitsByAuthor struct {
 	author string
 	cbd    []*CommitsByDate
 }
-type CommitsByAuthors map[string]*CommitsByAuthor
+type CommitsByAuthors map[users.User]*CommitsByAuthor
 
 // Because of seec 709cd912d4663af87903d3d278a3bab9d4d84153
 type CommitsByDate struct {
@@ -92,4 +93,16 @@ func (cba *CommitsByAuthor) AddCommit(commit *gh.Commit) {
 		}
 	}
 	cba.cbd = append(cba.cbd, &CommitsByDate{commit.AuthorDate(), []*gh.Commit{commit}})
+}
+
+func (cba *CommitsByAuthor) CommitsByDate() []*CommitsByDate {
+	return cba.cbd
+}
+
+func (cbd *CommitsByDate) Commits() []*gh.Commit {
+	return cbd.commits
+}
+
+func (cbd *CommitsByDate) Date() string {
+	return cbd.date
 }

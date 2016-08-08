@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"seec2/internal/commits"
@@ -75,9 +76,92 @@ func seeCommit(parent, commit *gh.Commit) string {
 		pdbg.Pdbgf("Same author '%s', so call checkParentCommits\nInitial message: '%s'", *pcommit.Author.Name, *commit.Message)
 		apcommit = pcommit.FirstParent()
 	}
-	commits := checkParentCommits(apcommit, *commit.Message)
-	pdbg.Pdbgf("commitsByAuthors '%s'", commits)
-	return ""
+	pcommits := checkParentCommits(apcommit, *commit.Message)
+	pdbg.Pdbgf("commitsByAuthors '%s'", pcommits)
+	if len(pcommits) == 0 {
+		pauthorname := pcommit.AuthorName()
+		pcommitsByAuthor := commits.NewCommitsByAuthor(pauthorname)
+		pcommitsByAuthor.AddCommit(pcommit)
+		userAuthor := users.AuthorNameAndLogin(pcommit)
+		pcommits[*userAuthor] = pcommitsByAuthor
+		pdbg.Pdbgf("Put single commit '%s' for author '%s'", pcommitsByAuthor, pauthorname)
+	}
+	res := ""
+	for userAuthor, pcommitsByAuthor := range pcommits {
+		commitsbd := pcommitsByAuthor.CommitsByDate()
+		first := true
+		plogin := userAuthor.Login
+		authorname := userAuthor.Name
+		for i, cbd := range commitsbd {
+			if first {
+				res = res + "See "
+			} else {
+				res = res + ", "
+			}
+			first = false
+			if i == len(commitsbd)-1 && i > 0 {
+				res = res + "and "
+			}
+			commits := cbd.Commits()
+			firstc := true
+			for _, commit := range commits {
+				if !firstc {
+					res = res + ", "
+				}
+				firstc = false
+				c := fmt.Sprintf("[commit %s](https://github.com/git/git/commit/%s)",
+					(*commit.SHA)[:7], *commit.SHA)
+				res = res + c
+			}
+			res = res + fmt.Sprintf(" (%s)", cbd.Date())
+		}
+		res = res + fmt.Sprintf(" by [%s (`%s`)](https://github.com/%s).  \n",
+			authorname, plogin, plogin)
+		// seec 8cc88166c00e555f1bf5375017ed91b7e2cc904e, https://github.com/git/git/commit/8cc88166c00e555f1bf5375017ed91b7e2cc904e
+		res = collect(res, *pcommit.Message, "Suggested-by")
+		// seec 777e75b60568b613e452ebbb30a1fb27c4fd7d8a, https://github.com/git/git/commit/777e75b60568b613e452ebbb30a1fb27c4fd7d8a
+		res = collect(res, *pcommit.Message, "Test-adapted-from")
+		// seec 6dec263333417738528089834bd8cda72017aa31, https://github.com/git/git/commit/6dec263333417738528089834bd8cda72017aa31
+		// seec 324a9f41cbf96ad994efc3b20be239116eba0dae, https://github.com/git/git/commit/324a9f41cbf96ad994efc3b20be239116eba0dae
+		res = collect(res, *pcommit.Message, "Helped-by")
+	}
+	return res
+}
+
+func collect(res, msg, activity string) string {
+	re := regexp.MustCompile(fmt.Sprintf(`%s:\s+([^<\r\n]+)\s+<([^>\r\n]+)>`, activity))
+	activitymsg := activity + ": "
+	first := true
+	allresc := re.FindAllStringSubmatch(msg, -1)
+	for i, resc := range allresc {
+		dot := ""
+		if len(resc) != 3 {
+			continue
+		}
+		name := resc[1]
+		email := resc[2]
+		login := users.Login(email, name)
+		if !first {
+			activitymsg = activitymsg + ", "
+		}
+		if i == len(allresc)-1 {
+			dot = "."
+			if i > 0 {
+				activitymsg = activitymsg + "and "
+			}
+		}
+		if login == "" {
+			activitymsg = activitymsg + fmt.Sprintf("%s <%s>%s", name, email, dot)
+			first = false
+			continue
+		}
+		activitymsg = activitymsg + fmt.Sprintf("[%s (`%s`)](https://github.com/%s)%s", name, login, login, dot)
+		first = false
+	}
+	if !first {
+		res = res + activitymsg + "  \n"
+	}
+	return res
 }
 
 func checkParentCommits(pcommit *gh.Commit, commitmsg string) commits.CommitsByAuthors {
@@ -88,18 +172,18 @@ func checkParentCommits(pcommit *gh.Commit, commitmsg string) commits.CommitsByA
 	title := pcommitmsgs[0]
 	pdbg.Pdbgf("title '%s'", title)
 	if strings.Contains(commitmsg, title) {
-		pauthorname := pcommit.AuthorName()
-		pdbg.Pdbgf("pauthorname='%s' for '%v'", pauthorname, pcommit.Author)
-		pcommitsByAuthor := res[pauthorname]
+		pauthorUser := *users.AuthorNameAndLogin(pcommit)
+		pdbg.Pdbgf("pauthorname='%s' for '%s'", pauthorUser.Name, pauthorUser.Login)
+		pcommitsByAuthor := res[pauthorUser]
 		if pcommitsByAuthor == nil {
-			pcommitsByAuthor = commits.NewCommitsByAuthor(pauthorname)
+			pcommitsByAuthor = commits.NewCommitsByAuthor(pauthorUser.Name)
 		}
 		pcommitsByAuthor.AddCommit(pcommit)
 		pdbg.Pdbgf("pcommitsByAuthor BEFOR='%s'", pcommitsByAuthor)
-		res[pauthorname] = pcommitsByAuthor
+		res[pauthorUser] = pcommitsByAuthor
 		pdbg.Pdbgf("res BEFOR='%s'", res)
 		pdbg.Pdbgf("call checkParentCommits with parents '%+v', pca '%s' for '%s'",
-			pcommit.Parents, pcommitsByAuthor.String(), pauthorname)
+			pcommit.Parents, pcommitsByAuthor.String(), pauthorUser.Name)
 		ppcommits := checkParentCommits(pcommit.FirstParent(), commitmsg)
 		res.Add(ppcommits)
 		pdbg.Pdbgf("res AFTER='%s'", res)
