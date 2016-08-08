@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"seec2/internal/commits"
 	"seec2/internal/gh"
 	"seec2/internal/users"
 
@@ -78,6 +79,7 @@ func seeCommit(parent, commit *gh.Commit) string {
 	return ""
 }
 
-func checkParentCommits(apcommit *gh.Commit, commitmsg string) string {
-	return ""
+func checkParentCommits(apcommit *gh.Commit, commitmsg string) commits.CommitsByAuthors {
+	res := make(commits.CommitsByAuthors)
+	return res
 }
