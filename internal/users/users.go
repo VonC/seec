@@ -36,7 +36,7 @@ func Login(email string, name string) string {
 }
 
 func login(email string, name string, SHA string) string {
-	fmt.Printf("email='%s', name='%s'\n", email, name)
+	// fmt.Printf("email='%s', name='%s'\n", email, name)
 	if login := cacheLogins(email, name); login != "" {
 		return login
 	}
@@ -127,7 +127,7 @@ func cacheLogins(email string, name string) string {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("cacheLogins='%s'\n", login)
+	// fmt.Printf("cacheLogins='%s'\n", login)
 	return login
 }
 
