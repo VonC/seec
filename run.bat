@@ -25,5 +25,9 @@ if not exist bin\%prjname%.exe (
 	echo "prjname='%prjname%' does not exist yet (not compiled)"
 	exit /b 1
 )
-cmd /v /c "set dbg=1 && bin\%prjname%.exe a58a8e3f7156dadd5d5e9643168545ff057c111a"
+if "%DBG%" neq "" (
+cmd /v /c "set dbg=1 && bin\%prjname%.exe 0d3279962acab475a523cfde04a79761ff12f147 2>a.dbg"
+) else (
+cmd /v /c "set dbg=1 && bin\%prjname%.exe 0d3279962acab475a523cfde04a79761ff12f147"
+)
 endlocal
