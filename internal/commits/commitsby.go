@@ -74,9 +74,11 @@ func (cbas CommitsByAuthors) Add(somecbas CommitsByAuthors) {
 			Pdbg.Pdbgf("Put commits '%s' for author '%s'", acommitsByAuthor.String(), authorName)
 		}
 	}
+	Pdbg.Pdbgf("ADD RES '%s'", cbas)
 }
 
 func (cba *CommitsByAuthor) addCba(acba *CommitsByAuthor) {
+	Pdbg.Pdbgf("addCba '%s' to cba '%s'", acba, cba)
 	for _, acbd := range acba.cbd {
 		date := acbd.date
 		found := false
@@ -89,8 +91,8 @@ func (cba *CommitsByAuthor) addCba(acba *CommitsByAuthor) {
 			}
 		}
 		if !found {
-			Pdbg.Pdbgf("addCba date not found => add '%s' to '%s'", acba, cba)
-			cba.cbd = append(cba.cbd, acba.cbd...)
+			Pdbg.Pdbgf("addCba date not found => add '%s' to '%s'", acbd, cba)
+			cba.cbd = append(cba.cbd, acbd)
 		}
 	}
 }
