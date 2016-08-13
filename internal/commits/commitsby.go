@@ -5,7 +5,11 @@ import (
 
 	"seec/internal/gh"
 	"seec/internal/users"
+
+	"github.com/VonC/godbg"
 )
+
+var Pdbg *godbg.Pdbg
 
 type CommitsByAuthor struct {
 	author string
@@ -62,8 +66,8 @@ func (cbas CommitsByAuthors) Add(somecbas CommitsByAuthors) {
 			cbas[authorName] = pcommitsByAuthor
 		} else {
 			acommitsByAuthor.addCba(pcommitsByAuthor)
-			cbas[authorName] = acommitsByAuthor
-			// pdbg.Pdbgf("Put commits '%s' for author '%s'", acommitsByAuthor.String(), authorName)
+			// cbas[authorName] = acommitsByAuthor
+			Pdbg.Pdbgf("Put commits '%s' for author '%s'", acommitsByAuthor.String(), authorName)
 		}
 	}
 }
@@ -73,12 +77,15 @@ func (cba *CommitsByAuthor) addCba(acba *CommitsByAuthor) {
 		date := acbd.date
 		found := false
 		for _, cbd := range cba.cbd {
+			Pdbg.Pdbgf("addCba cbd '%s' vs acba '%s'", cbd.date, date)
 			if cbd.date == date {
 				found = true
 				cbd.commits = append(cbd.commits, acbd.commits...)
+				break
 			}
 		}
 		if !found {
+			Pdbg.Pdbgf("addCba date not found => add '%s' to '%s'", acba, cba)
 			cba.cbd = append(cba.cbd, acba.cbd...)
 		}
 	}
@@ -87,6 +94,7 @@ func (cba *CommitsByAuthor) addCba(acba *CommitsByAuthor) {
 func (cba *CommitsByAuthor) AddCommit(commit *gh.Commit) {
 	date := commit.AuthorDate()
 	for _, cbd := range cba.cbd {
+		Pdbg.Pdbgf("ADDCOMMIT: cbd date '%s' vs commit date '%s'", cbd.date, date)
 		if cbd.date == date {
 			cbd.commits = append(cbd.commits, commit)
 			return

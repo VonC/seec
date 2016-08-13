@@ -26,6 +26,7 @@ func init() {
 		pdbg = godbg.NewPdbg(godbg.OptExcludes([]string{"/seec.go"}))
 	}
 	gh.GHex = ex
+	commits.Pdbg = pdbg
 }
 
 func main() {
