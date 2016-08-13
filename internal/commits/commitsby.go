@@ -59,6 +59,10 @@ func NewCommitsByAuthor(authorname string) *CommitsByAuthor {
 	return &CommitsByAuthor{authorname, []*CommitsByDate{}}
 }
 
+func NewCommitsByDate(commit *gh.Commit) *CommitsByDate {
+	return &CommitsByDate{commit.AuthorDate(), []*gh.Commit{commit}}
+}
+
 func (cbas CommitsByAuthors) Add(somecbas CommitsByAuthors) {
 	for authorName, pcommitsByAuthor := range somecbas {
 		acommitsByAuthor := cbas[authorName]
@@ -100,7 +104,7 @@ func (cba *CommitsByAuthor) AddCommit(commit *gh.Commit) {
 			return
 		}
 	}
-	cba.cbd = append(cba.cbd, &CommitsByDate{commit.AuthorDate(), []*gh.Commit{commit}})
+	cba.cbd = append(cba.cbd, NewCommitsByDate(commit))
 }
 
 func (cba *CommitsByAuthor) CommitsByDate() []*CommitsByDate {
