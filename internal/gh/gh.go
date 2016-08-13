@@ -40,7 +40,7 @@ func (c *Commit) String() string {
 	f := ""
 	if c.Author != nil {
 		f = fmt.Sprintf(" from '%s', date '%s'",
-			*c.Author.Name, c.Author.Date.Format("02 Jan 2006"))
+			*c.Author.Name, c.AuthorDate())
 	}
 	return fmt.Sprintf("commit '%s'%s",
 		*c.SHA, f)
