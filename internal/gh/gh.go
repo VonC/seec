@@ -57,7 +57,7 @@ func (c *Commit) AuthorDate() string {
 	if c.Message == nil {
 		c.Commit = MustGetCommit(*c.SHA).Commit
 	}
-	c.authorDate = c.Committer.Date.Format("02 Jan 2006")
+	c.authorDate = c.Author.Date.Format("02 Jan 2006")
 	return c.authorDate
 }
 
