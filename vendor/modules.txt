@@ -1,0 +1,24 @@
+# github.com/VonC/godbg v0.0.0-20150317221837-2ed034f47288
+github.com/VonC/godbg
+github.com/VonC/godbg/exit
+# github.com/atotto/clipboard v0.0.0-20160219034421-bb272b845f11
+github.com/atotto/clipboard
+# github.com/golang/protobuf v1.2.0
+github.com/golang/protobuf/proto
+# github.com/google/go-github v0.0.0-20160802180827-56add9d4071b
+github.com/google/go-github/github
+# github.com/google/go-querystring v0.0.0-20160401233042-9235644dd9e5
+github.com/google/go-querystring/query
+# golang.org/x/net v0.0.0-20180724234803-3673e40ba225
+golang.org/x/net/context
+# golang.org/x/oauth2 v0.0.0-20160803220926-04e1573abc89
+golang.org/x/oauth2
+golang.org/x/oauth2/internal
+# google.golang.org/appengine v1.5.0
+google.golang.org/appengine/urlfetch
+google.golang.org/appengine/internal
+google.golang.org/appengine/internal/urlfetch
+google.golang.org/appengine/internal/base
+google.golang.org/appengine/internal/datastore
+google.golang.org/appengine/internal/log
+google.golang.org/appengine/internal/remote_api
