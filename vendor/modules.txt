@@ -1,24 +1,25 @@
 # github.com/VonC/godbg v0.0.0-20150317221837-2ed034f47288
+## explicit
 github.com/VonC/godbg
 github.com/VonC/godbg/exit
 # github.com/atotto/clipboard v0.0.0-20160219034421-bb272b845f11
+## explicit
 github.com/atotto/clipboard
-# github.com/golang/protobuf v1.2.0
-github.com/golang/protobuf/proto
 # github.com/google/go-github v0.0.0-20160802180827-56add9d4071b
+## explicit
 github.com/google/go-github/github
 # github.com/google/go-querystring v0.0.0-20160401233042-9235644dd9e5
+## explicit
 github.com/google/go-querystring/query
-# golang.org/x/net v0.0.0-20180724234803-3673e40ba225
-golang.org/x/net/context
-# golang.org/x/oauth2 v0.0.0-20160803220926-04e1573abc89
+# github.com/gopherjs/gopherjs v0.0.0-20190411002643-bd77b112433e
+## explicit
+# github.com/jtolds/gls v4.2.0+incompatible
+## explicit
+# github.com/smartystreets/assertions v0.0.0-20160707190355-2063fd1cc7c9
+## explicit
+# github.com/smartystreets/goconvey v0.0.0-20160704134950-4622128e06c7
+## explicit
+# golang.org/x/oauth2 v0.27.0
+## explicit; go 1.23.0
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
-# google.golang.org/appengine v1.5.0
-google.golang.org/appengine/urlfetch
-google.golang.org/appengine/internal
-google.golang.org/appengine/internal/urlfetch
-google.golang.org/appengine/internal/base
-google.golang.org/appengine/internal/datastore
-google.golang.org/appengine/internal/log
-google.golang.org/appengine/internal/remote_api
